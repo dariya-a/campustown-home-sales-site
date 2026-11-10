@@ -1,0 +1,133 @@
+{
+  "source": "data/college_town_home_sales.csv",
+  "rule": "Sales with sale_price under $10,000 (and blank prices) are left out.",
+  "total_rows": 35442,
+  "cities": [
+    {
+      "city": "Davis",
+      "state": "CA",
+      "median_sale_price": 889000,
+      "sales_counted": 941,
+      "sales_under_rule": 0
+    },
+    {
+      "city": "Pittsboro",
+      "state": "NC",
+      "median_sale_price": 876985.5,
+      "sales_counted": 92,
+      "sales_under_rule": 0
+    },
+    {
+      "city": "Chapel Hill",
+      "state": "NC",
+      "median_sale_price": 735000,
+      "sales_counted": 2713,
+      "sales_under_rule": 3
+    },
+    {
+      "city": "Charlottesville",
+      "state": "VA",
+      "median_sale_price": 615000.0,
+      "sales_counted": 2774,
+      "sales_under_rule": 1
+    },
+    {
+      "city": "Middleton",
+      "state": "WI",
+      "median_sale_price": 611000,
+      "sales_counted": 645,
+      "sales_under_rule": 0
+    },
+    {
+      "city": "Carrboro",
+      "state": "NC",
+      "median_sale_price": 605000,
+      "sales_counted": 205,
+      "sales_under_rule": 3
+    },
+    {
+      "city": "Ann Arbor",
+      "state": "MI",
+      "median_sale_price": 572000,
+      "sales_counted": 3009,
+      "sales_under_rule": 12
+    },
+    {
+      "city": "Newberry",
+      "state": "FL",
+      "median_sale_price": 439995.0,
+      "sales_counted": 152,
+      "sales_under_rule": 0
+    },
+    {
+      "city": "State College",
+      "state": "PA",
+      "median_sale_price": 430000.0,
+      "sales_counted": 1348,
+      "sales_under_rule": 3
+    },
+    {
+      "city": "Madison",
+      "state": "WI",
+      "median_sale_price": 421000,
+      "sales_counted": 5061,
+      "sales_under_rule": 0
+    },
+    {
+      "city": "Savoy",
+      "state": "IL",
+      "median_sale_price": 402700,
+      "sales_counted": 247,
+      "sales_under_rule": 0
+    },
+    {
+      "city": "West Lafayette",
+      "state": "IN",
+      "median_sale_price": 379900,
+      "sales_counted": 1559,
+      "sales_under_rule": 0
+    },
+    {
+      "city": "Athens",
+      "state": "GA",
+      "median_sale_price": 370000,
+      "sales_counted": 2809,
+      "sales_under_rule": 5
+    },
+    {
+      "city": "Gainesville",
+      "state": "FL",
+      "median_sale_price": 350000,
+      "sales_counted": 5469,
+      "sales_under_rule": 8
+    },
+    {
+      "city": "Iowa City",
+      "state": "IA",
+      "median_sale_price": 342000,
+      "sales_counted": 1909,
+      "sales_under_rule": 0
+    },
+    {
+      "city": "Lafayette",
+      "state": "IN",
+      "median_sale_price": 260000,
+      "sales_counted": 3053,
+      "sales_under_rule": 4
+    },
+    {
+      "city": "Champaign",
+      "state": "IL",
+      "median_sale_price": 240000,
+      "sales_counted": 2285,
+      "sales_under_rule": 1
+    },
+    {
+      "city": "Urbana",
+      "state": "IL",
+      "median_sale_price": 229900,
+      "sales_counted": 1131,
+      "sales_under_rule": 0
+    }
+  ]
+}
