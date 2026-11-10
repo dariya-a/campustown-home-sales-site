@@ -8,24 +8,181 @@
   <!-- An empty icon, so the browser doesn't log an error looking for favicon.ico -->
   <link rel="icon" href="data:,">
   <style>
-    :root { color-scheme: light dark; }
+    :root {
+      color-scheme: light dark;
+      --page-plane:     #f9f9f7;
+      --surface-1:      #fcfcfb;   /* chart surface */
+      --text-primary:   #0b0b0b;
+      --text-secondary: #52514e;
+      --text-muted:     #898781;
+      --gridline:       #e1e0d9;
+      --baseline:       #c3c2b7;
+      --series-1:       #2a78d6;   /* single series: sequential blue, step 450 */
+    }
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) {
+        color-scheme: dark;
+        --page-plane:     #0d0d0d;
+        --surface-1:      #1a1a19;
+        --text-primary:   #f0efec;
+        --text-secondary: #c3c2b7;
+        --text-muted:     #898781;
+        --gridline:       #2c2c2a;
+        --baseline:       #383835;
+        --series-1:       #3987e5;
+      }
+    }
+    :root[data-theme="dark"] {
+      color-scheme: dark;
+      --page-plane:     #0d0d0d;
+      --surface-1:      #1a1a19;
+      --text-primary:   #f0efec;
+      --text-secondary: #c3c2b7;
+      --text-muted:     #898781;
+      --gridline:       #2c2c2a;
+      --baseline:       #383835;
+      --series-1:       #3987e5;
+    }
     body {
-      max-width: 40rem;
+      max-width: 52rem;
       margin: 0 auto;
       padding: 3rem 1rem;
-      font-family: system-ui, sans-serif;
+      font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
       line-height: 1.5;
+      background: var(--page-plane);
+      color: var(--text-primary);
     }
-    footer { margin-top: 3rem; font-size: 0.875rem; opacity: 0.75; }
+    footer { margin-top: 3rem; font-size: 0.875rem; color: var(--text-secondary); }
+
+    .chart-section { margin-top: 2.5rem; }
+    .chart-section h2 { font-size: 1.25rem; margin: 0 0 0.25rem; }
+    .chart-note { margin: 0 0 1.25rem; font-size: 0.9rem; color: var(--text-secondary); }
+
+    .bar-chart {
+      list-style: none;
+      margin: 0;
+      padding: 1rem;
+      background: var(--surface-1);
+      border: 1px solid rgba(11, 11, 11, 0.10);
+      border-radius: 6px;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) .bar-chart { border-color: rgba(255, 255, 255, 0.10); }
+    }
+    :root[data-theme="dark"] .bar-chart { border-color: rgba(255, 255, 255, 0.10); }
+
+    .bar-row {
+      display: grid;
+      grid-template-columns: minmax(7.5rem, 11rem) 1fr 5.5rem;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.3rem 0;
+      cursor: default;
+    }
+    .bar-label { font-size: 0.9rem; text-align: right; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .bar-track {
+      position: relative;
+      height: 1.1rem;
+      border-left: 1px solid var(--baseline);   /* the baseline the bars grow from */
+    }
+    .bar {
+      display: block;
+      height: 100%;
+      background: var(--series-1);
+      border-radius: 0 4px 4px 0;               /* rounded data end, flat on the baseline */
+      min-width: 2px;
+    }
+    .bar-value { font-size: 0.9rem; font-variant-numeric: tabular-nums; color: var(--text-primary); }
+    .bar-row:hover .bar { filter: brightness(1.08); }
+    .bar-row:hover .bar-label { font-weight: 600; }
+
+    .chart-status { font-size: 0.9rem; color: var(--text-secondary); }
+
+    @media (max-width: 36rem) {
+      .bar-row { grid-template-columns: 1fr 4.5rem; row-gap: 0.2rem; }
+      .bar-track { grid-column: 1 / -1; grid-row: 2; }
+      .bar-label { text-align: left; }
+      .bar-value { text-align: right; }
+    }
   </style>
 </head>
 <body>
   <main>
     <h1>This site is under construction</h1>
     <p>It will show findings from the College-town home sales dataset.</p>
+
+    <section class="chart-section" aria-labelledby="median-price-heading">
+      <h2 id="median-price-heading">Median sale price by city</h2>
+      <p class="chart-note">
+        Each bar is the median sale price of that city's sales of $10,000 or more.
+        The 40 sales under $10,000 are left out of every median. Hover a row for its sales count.
+      </p>
+      <ol class="bar-chart" id="median-price-chart" aria-labelledby="median-price-heading">
+        <li class="chart-status">Loading chart data…</li>
+      </ol>
+    </section>
   </main>
   <footer>
     <p>Data: College-town home sales dataset, version 1.0 (2026). University of Illinois-Deloitte Foundation Center for Business Emerging Technologies. Data collected March 2026.</p>
   </footer>
+
+  <script>
+    (function () {
+      var list = document.getElementById('median-price-chart');
+      var money = new Intl.NumberFormat('en-US', {
+        style: 'currency', currency: 'USD', maximumFractionDigits: 0
+      });
+      var count = new Intl.NumberFormat('en-US');
+
+      function showStatus(text) {
+        list.innerHTML = '';
+        var li = document.createElement('li');
+        li.className = 'chart-status';
+        li.textContent = text;
+        list.appendChild(li);
+      }
+
+      fetch('data/city_median_sale_price.json')
+        .then(function (response) {
+          if (!response.ok) throw new Error('HTTP ' + response.status);
+          return response.json();
+        })
+        .then(function (data) {
+          var cities = data.cities;
+          var max = Math.max.apply(null, cities.map(function (c) { return c.median_sale_price; }));
+          list.innerHTML = '';
+          cities.forEach(function (c) {
+            var name = c.city + ', ' + c.state;
+            var row = document.createElement('li');
+            row.className = 'bar-row';
+            row.title = name + ': median ' + money.format(c.median_sale_price) +
+              ' from ' + count.format(c.sales_counted) + ' sales of $10,000 or more';
+
+            var label = document.createElement('span');
+            label.className = 'bar-label';
+            label.textContent = name;
+
+            var track = document.createElement('span');
+            track.className = 'bar-track';
+            var bar = document.createElement('span');
+            bar.className = 'bar';
+            bar.style.width = (c.median_sale_price / max * 100).toFixed(2) + '%';
+            track.appendChild(bar);
+
+            var value = document.createElement('span');
+            value.className = 'bar-value';
+            value.textContent = money.format(c.median_sale_price);
+
+            row.appendChild(label);
+            row.appendChild(track);
+            row.appendChild(value);
+            list.appendChild(row);
+          });
+        })
+        .catch(function () {
+          showStatus('The chart data could not be loaded.');
+        });
+    })();
+  </script>
 </body>
 </html>
